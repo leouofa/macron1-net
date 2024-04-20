@@ -2,9 +2,13 @@ import kaboom from "kaboom"
 
 const k = kaboom()
 
-k.setGravity(2400)
+k.setGravity(3400)
 
+// Sprites
 k.loadSprite("bean", "sprites/bean.png")
+
+// Speeds
+const MOVE_SPEED = 200
 
 const player = k.add([
   k.sprite("bean"),
@@ -14,7 +18,7 @@ const player = k.add([
   k.body()
 ])
 
-const MOVE_SPEED = 200
+// Actions
 k.onKeyDown('right', () => {
   player.move(MOVE_SPEED, 0)
 })
@@ -33,9 +37,9 @@ k.addLevel([
   '                                        ',
   '                                        ',
   '                                        ',
+  '     x                                  ',
   '                                        ',
-  '                                        ',
-  '         @       @  @         @     @   ',
+  '     x   @       @  @         @     @   ',
   '                                        ',
   'xx   xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
 
@@ -46,19 +50,8 @@ k.addLevel([
     'x': () => [
       sprite('bean'),
       area(),
-      body({ isStatic: true })
+      body({ isStatic: true }),
+      scale(0.5)
     ],
   }
 })
-
-
-
-// k.loadSprite("bean", "sprites/bean.png")
-//
-// k.add([
-//   k.pos(120, 120),
-//   k.scale(1.5),
-//   k.sprite("bean"),
-// ])
-//
-// k.onClick(() => k.addKaboom(k.mousePos()))
