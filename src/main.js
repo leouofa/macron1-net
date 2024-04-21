@@ -1,71 +1,103 @@
 import kaboom from "kaboom"
 
-const k = kaboom({
-  fullscreen: true,
-  scale: 2
-})
-
-k.setGravity(3400)
-
-// Sprites
-k.loadSprite("bean", "sprites/bean.png")
-k.loadSprite("ground", "sprites/ground.gif")
-
-// Speeds
-const moveSpeed = 200
-const jumpForce = 360
-const bigJumpForce = 500
-let currentJumpForce = jumpForce
-const fallDeath = 400
-const enemyDeath = 20
-
-// Game Logic
-let isJumping = true
+function startGame() {
+  const k = kaboom({
+    global: true,
+    fullscreen: true,
+    scale: 2
+  })
 
 
-const player = k.add([
-  k.sprite("bean"),
-  k.scale(0.5),
-  k.pos(20, 20),
-  k.area(),
-  k.body()
-])
+  // Speeds
+  const gravity = 3400
+  const moveSpeed = 200
+  const jumpForce = 360
+  const bigJumpForce = 500
+  let currentJumpForce = jumpForce
+  const fallDeath = 400
+  const enemyDeath = 20
 
-// Actions
-k.onKeyDown('right', () => {
-  player.move(moveSpeed, 0)
-})
+  // Set State
+  k.setGravity(gravity)
 
-k.onKeyDown('left', () => {
-  player.move(-moveSpeed, 0)
-})
+  // Game Logic
+  let isJumping = true
 
-k.onKeyDown('space', () => {
-  player.jump()
-})
+  // Sprites
+  k.loadSprite("bean", "sprites/bean.png")
+  k.loadSprite("ground", "sprites/ground.gif")
 
-k.addLevel([
-  '                                        ',
-  '                                        ',
-  '                                        ',
-  '                                        ',
-  '                                        ',
-  '                                        ',
-  '                                        ',
-  '     x                                  ',
-  '                                        ',
-  '     x   @       @  @         @     @   ',
-  '                                        ',
-  'xxxx xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
+  k.scene("game", ({ level, score }) => {
+    const maps = [
+      [
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '     x                                  ',
+        '                                        ',
+        '     x   @       @  @         @     @   ',
+        '                                        ',
+        'xxxx xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
+      ],
+      [
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '                                        ',
+        '     x                                  ',
+        '                                        ',
+        '     x   @       @  @         @     @   ',
+        '                                        ',
+        'x x  xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
+      ]
+    ]
 
-], {
-  tileWidth: 40,
-  tileHeight: 40,
-  tiles: {
-    'x': () => [
-      sprite('ground'),
-      area(),
-      body({ isStatic: true }),
-    ],
-  }
-})
+    const levelConfig = {
+      tileWidth: 40,
+      tileHeight: 40,
+      tiles: {
+        'x': () => [
+          sprite('ground'),
+          area(),
+          body({ isStatic: true }),
+        ],
+      }
+    }
+
+    const player = k.add([
+      k.sprite("bean"),
+      k.scale(0.5),
+      k.pos(20, 20),
+      k.area(),
+      k.body()
+    ])
+
+    // Actions
+    k.onKeyDown('right', () => {
+      player.move(moveSpeed, 0)
+    })
+
+    k.onKeyDown('left', () => {
+      player.move(-moveSpeed, 0)
+    })
+
+    k.onKeyDown('space', () => {
+      player.jump()
+    })
+
+    const gameLevel = k.addLevel(maps[level], levelConfig)
+
+  })
+
+
+  k.go("game", { level: 0, score: 0 })
+}
+
+startGame()
