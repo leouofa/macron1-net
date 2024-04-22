@@ -94,6 +94,18 @@ function startGame() {
 
     const gameLevel = k.addLevel(maps[level], levelConfig)
 
+    const scoreLabel = k.add([
+      k.text(score),
+      k.pos(30, 6),
+      { value: score }
+    ])
+
+    k.add([
+      k.text(`level ${parseInt(level + 1)}`),
+      k.pos(100, 6)
+    ])
+
+
   })
 
 
