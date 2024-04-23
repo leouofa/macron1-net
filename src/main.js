@@ -11,7 +11,7 @@ function startGame() {
   // Speeds
   const gravity = 3400
   const moveSpeed = 200
-  const jumpForce = 360
+  const jumpForce = 560
   const bigJumpForce = 500
   let currentJumpForce = jumpForce
   const fallDeath = 4000
@@ -40,7 +40,7 @@ function startGame() {
         'w    x                                  ',
         'w                                       ',
         'w    x   @       @  @         @     @   ',
-        'w                                       ',
+        'w                                      g',
         'xxxx xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
       ],
       [
@@ -72,6 +72,12 @@ function startGame() {
           sprite('ground'),
           area(),
           body({ isStatic: true }),
+        ],
+        'g': () => [
+          sprite('ground'),
+          area(),
+          body({ isStatic: true }),
+          'gate'
         ],
       }
     }
@@ -135,6 +141,13 @@ function startGame() {
         k.pos(width() / 2, height() / 2)
       ])
 
+    })
+
+    player.onCollide('gate', () => {
+      k.go('game', {
+        level: (level + 1),
+        score: scoreLabel.value
+      })
     })
 
 
