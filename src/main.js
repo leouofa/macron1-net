@@ -14,7 +14,7 @@ function startGame() {
   const jumpForce = 360
   const bigJumpForce = 500
   let currentJumpForce = jumpForce
-  const fallDeath = 400
+  const fallDeath = 4000
   const enemyDeath = 20
 
   // Set State
@@ -30,17 +30,17 @@ function startGame() {
   k.scene("game", ({ level, score }) => {
     const maps = [
       [
-        '                                        ',
-        '                                        ',
-        '                                        ',
-        '                                        ',
-        '                                        ',
-        '                                        ',
-        '                                        ',
-        '     x                                  ',
-        '                                        ',
-        '     x   @       @  @         @     @   ',
-        '                                        ',
+        'w                                       ',
+        'w                                       ',
+        'w                                       ',
+        'w                                       ',
+        'w                                       ',
+        'w                                       ',
+        'w                                       ',
+        'w    x                                  ',
+        'w                                       ',
+        'w    x   @       @  @         @     @   ',
+        'w                                       ',
         'xxxx xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
       ],
       [
@@ -68,29 +68,13 @@ function startGame() {
           area(),
           body({ isStatic: true }),
         ],
+        'w': () => [
+          sprite('ground'),
+          area(),
+          body({ isStatic: true }),
+        ],
       }
     }
-
-    const player = k.add([
-      k.sprite("bean"),
-      k.scale(0.5),
-      k.pos(20, 20),
-      k.area(),
-      k.body()
-    ])
-
-    // Actions
-    k.onKeyDown('right', () => {
-      player.move(moveSpeed, 0)
-    })
-
-    k.onKeyDown('left', () => {
-      player.move(-moveSpeed, 0)
-    })
-
-    k.onKeyDown('space', () => {
-      player.jump()
-    })
 
     const gameLevel = k.addLevel(maps[level], levelConfig)
 
@@ -104,6 +88,49 @@ function startGame() {
       k.text(`level ${parseInt(level + 1)}`),
       k.pos(100, 6)
     ])
+
+    const player = k.add([
+      k.sprite("bean"),
+      k.scale(0.5),
+      k.pos(80, 20),
+      k.area(),
+      k.body(),
+      k.anchor("bot"),
+      "player"
+    ])
+
+    // Actions
+    k.onKeyDown('right', () => {
+      player.move(moveSpeed, 0)
+    })
+
+    k.onKeyDown('left', () => {
+      player.move(-moveSpeed, 0)
+    })
+
+    k.onKeyPress('space', () => {
+      if (player.isGrounded()) {
+        isJumping = true
+        player.jump(currentJumpForce)
+      }
+    })
+
+    k.onUpdate("player", (player) => {
+      if (player.isGrounded()) {
+        isJumping = false
+      }
+    })
+
+    k.onUpdate("player", (player) => {
+      k.camPos(player.pos)
+      if (player.pos.y >= fallDeath) {
+        k.go('lose', { score: scoreLabel.value })
+      }
+    })
+
+    scene('lose', ({ score }) => {
+
+    })
 
 
   })
