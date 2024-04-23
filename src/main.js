@@ -4,7 +4,7 @@ function startGame() {
   const k = kaboom({
     global: true,
     fullscreen: true,
-    scale: 2
+    scale: 1
   })
 
 
@@ -15,7 +15,7 @@ function startGame() {
   const bigJumpForce = 500
   let currentJumpForce = jumpForce
   const fallDeath = 4000
-  const enemyDeath = 20
+  const enemySpeed = 20
 
   // Set State
   k.setGravity(gravity)
@@ -41,7 +41,7 @@ function startGame() {
         'w                                       ',
         'w    x   @       @  @         @     @   ',
         'w                                      g',
-        'xxxx xxxxxx xxxxxxxxxx xxxxxxxxx xxxxxxx',
+        'xxxx xxxxxx xxxxxxxxxx  xxxxxxxx xxxxxxx',
       ],
       [
         '                                        ',
@@ -67,17 +67,25 @@ function startGame() {
           sprite('ground'),
           area(),
           body({ isStatic: true }),
+          'ground'
         ],
         'w': () => [
           sprite('ground'),
           area(),
           body({ isStatic: true }),
+          'wall'
         ],
         'g': () => [
           sprite('ground'),
           area(),
           body({ isStatic: true }),
           'gate'
+        ],
+        '@': () => [
+          sprite('ground'),
+          area(),
+          body({}),
+          'dangerous'
         ],
       }
     }
@@ -134,6 +142,28 @@ function startGame() {
       }
     })
 
+    player.onCollide("dangerous", (dangerous) => {
+      if (isJumping) {
+        destroy(dangerous)
+        scoreLabel.value++
+        scoreLabel.text = scoreLabel.value
+      }
+      else {
+        k.go('lose', { score: scoreLabel.value })
+      }
+    })
+
+    player.onCollide('gate', () => {
+      k.go('game', {
+        level: (level + 1),
+        score: scoreLabel.value
+      })
+    })
+
+    k.onUpdate("dangerous", (dangerous) => {
+      dangerous.move(-enemySpeed)
+    })
+
     scene('lose', ({ score }) => {
       add([
         k.text(score, 32),
@@ -143,12 +173,6 @@ function startGame() {
 
     })
 
-    player.onCollide('gate', () => {
-      k.go('game', {
-        level: (level + 1),
-        score: scoreLabel.value
-      })
-    })
 
 
   })
