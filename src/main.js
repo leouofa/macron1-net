@@ -129,6 +129,11 @@ function startGame() {
     })
 
     scene('lose', ({ score }) => {
+      add([
+        k.text(score, 32),
+        k.anchor('center'),
+        k.pos(width() / 2, height() / 2)
+      ])
 
     })
 
